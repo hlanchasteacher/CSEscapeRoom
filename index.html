@@ -81,6 +81,10 @@
             padding: 8px;
             text-align: center;
         }
+        .highlight {
+            color: #ff4500;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -145,37 +149,42 @@
 
     <!-- Puzzle 6 -->
     <div id="puzzle6" class="puzzle">
-        <h2>Layer 6: Code Execution</h2>
-        <p>A count-controlled loop is generating a security pin. Read the Python code below and determine the final output printed to the console.</p>
-<pre><code>factorial = 1
-for i in range(1, 6):
-    factorial *= i
-print(factorial)</code></pre>
-        <input type="text" id="ans6" placeholder="Enter the exact numeric output">
-        <p id="err6" class="error">ACCESS DENIED. Incorrect execution output.</p>
-        <button onclick="checkAnswer('ans6', '120', 'puzzle6', 'puzzle7', 'err6')">Submit</button>
+        <h2>Layer 6: Complete the Code</h2>
+        <p>This code simulates a post-condition loop to ask for a password until the correct one is entered. However, an essential keyword is missing, causing an infinite loop even when the password is correct!</p>
+<pre><code>while True:
+    password = input("Write the password: ")
+    if password == "V@cac1ones":
+        print("Access Granted")
+        _______ # MISSING LINE HERE
+    print("Bad password, try again")</code></pre>
+        <p>What exact Python keyword must replace the blank line to exit the loop?</p>
+        <input type="text" id="ans6" placeholder="Enter the missing keyword">
+        <p id="err6" class="error">ACCESS DENIED. Infinite loop detected.</p>
+        <button onclick="checkAnswer('ans6', 'BREAK', 'puzzle6', 'puzzle7', 'err6')">Submit</button>
     </div>
 
     <!-- Puzzle 7 -->
     <div id="puzzle7" class="puzzle">
-        <h2>Layer 7: Trace Tables</h2>
-        <p>Final lock! We must verify the data flow. The algorithm asks the user to input two numbers, sums them into the variable <strong>Total</strong>, and divides that by 2, storing it in <strong>Average</strong>. Then it outputs the Average.</p>
-        <p>Given the inputs <strong>30</strong> and <strong>20</strong>, complete the missing value (?) in the trace table.</p>
+        <h2>Layer 7: Advanced Trace Table</h2>
+        <p>Final lock! We must verify the execution flow of a conditional loop. The trace table below tracks a `while` loop that counts from 1 to 5.</p>
         <table>
             <tr>
-                <th>Total</th>
-                <th>Average</th>
+                <th>Count</th>
+                <th>Count <= 5?</th>
                 <th>Output</th>
+                <th>Count = count + 1</th>
             </tr>
-            <tr>
-                <td>50</td>
-                <td>?</td>
-                <td>25</td>
-            </tr>
+            <tr><td>1</td><td>Yes</td><td>1</td><td>2</td></tr>
+            <tr><td>2</td><td>Yes</td><td>2</td><td>3</td></tr>
+            <tr><td>3</td><td>Yes</td><td>3</td><td class="highlight">X</td></tr>
+            <tr><td>4</td><td>Yes</td><td class="highlight">Y</td><td>5</td></tr>
+            <tr><td>5</td><td class="highlight">Z</td><td>5</td><td>6</td></tr>
+            <tr><td>6</td><td>No</td><td>END</td><td></td></tr>
         </table>
-        <input type="text" id="ans7" placeholder="Enter the missing number">
-        <p id="err7" class="error">ACCESS DENIED. Invalid trace variable.</p>
-        <button onclick="checkAnswer('ans7', '25', 'puzzle7', 'success', 'err7')">Submit</button>
+        <p>Determine the exact values of <strong>X</strong>, <strong>Y</strong>, and <strong>Z</strong>. Combine them together without spaces.</p>
+        <input type="text" id="ans7" placeholder="e.g. 99No">
+        <p id="err7" class="error">ACCESS DENIED. Invalid trace variables.</p>
+        <button onclick="checkAnswer('ans7', '44YES', 'puzzle7', 'success', 'err7')">Submit</button>
     </div>
 
     <!-- Success -->
