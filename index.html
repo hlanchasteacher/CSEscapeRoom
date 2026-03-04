@@ -20,8 +20,10 @@
             border: 2px solid #39ff14;
             border-radius: 10px;
             padding: 30px;
-            max-width: 600px;
+            max-width: 650px;
             box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+            overflow-y: auto;
+            max-height: 90vh;
         }
         h1, h2 {
             text-align: center;
@@ -45,6 +47,7 @@
             font-weight: bold;
             font-family: 'Courier New', Courier, monospace;
             width: 100%;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #2ebc0f;
@@ -61,6 +64,23 @@
             display: none;
             margin-bottom: 10px;
         }
+        pre {
+            background-color: #000;
+            padding: 10px;
+            border-left: 3px solid #39ff14;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        th, td {
+            border: 1px solid #39ff14;
+            padding: 8px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -70,7 +90,7 @@
     
     <!-- Intro -->
     <div id="intro" class="puzzle active">
-        <p>Welcome, IB Computer Science Student. The school's mainframe has been locked down by a rogue process. You have 35 minutes to override the system by solving 5 security layers based on your coursework.</p>
+        <p>Welcome, IB Computer Science Student. The school's mainframe has been locked down by a rogue process. You have 35 minutes to override the system by solving 7 security layers based on your coursework.</p>
         <button onclick="nextPuzzle('intro', 'puzzle1')">Initialize Override Sequence</button>
     </div>
 
@@ -116,11 +136,46 @@
     <!-- Puzzle 5 -->
     <div id="puzzle5" class="puzzle">
         <h2>Layer 5: Computational Thinking</h2>
-        <p>Final lock! Before releasing the system, you must specify how success will be measured.</p>
+        <p>Before releasing the system, you must specify how success will be measured.</p>
         <p><em>"What do we call the specific benchmarks or standards that are used to check if a computational solution is successful?"</em></p>
         <input type="text" id="ans5" placeholder="Enter 2-word term">
         <p id="err5" class="error">ACCESS DENIED. Missing benchmarks.</p>
-        <button onclick="checkAnswer('ans5', 'EVALUATION CRITERIA', 'puzzle5', 'success', 'err5')">Submit</button>
+        <button onclick="checkAnswer('ans5', 'EVALUATION CRITERIA', 'puzzle5', 'puzzle6', 'err5')">Submit</button>
+    </div>
+
+    <!-- Puzzle 6 -->
+    <div id="puzzle6" class="puzzle">
+        <h2>Layer 6: Code Execution</h2>
+        <p>A count-controlled loop is generating a security pin. Read the Python code below and determine the final output printed to the console.</p>
+<pre><code>factorial = 1
+for i in range(1, 6):
+    factorial *= i
+print(factorial)</code></pre>
+        <input type="text" id="ans6" placeholder="Enter the exact numeric output">
+        <p id="err6" class="error">ACCESS DENIED. Incorrect execution output.</p>
+        <button onclick="checkAnswer('ans6', '120', 'puzzle6', 'puzzle7', 'err6')">Submit</button>
+    </div>
+
+    <!-- Puzzle 7 -->
+    <div id="puzzle7" class="puzzle">
+        <h2>Layer 7: Trace Tables</h2>
+        <p>Final lock! We must verify the data flow. The algorithm asks the user to input two numbers, sums them into the variable <strong>Total</strong>, and divides that by 2, storing it in <strong>Average</strong>. Then it outputs the Average.</p>
+        <p>Given the inputs <strong>30</strong> and <strong>20</strong>, complete the missing value (?) in the trace table.</p>
+        <table>
+            <tr>
+                <th>Total</th>
+                <th>Average</th>
+                <th>Output</th>
+            </tr>
+            <tr>
+                <td>50</td>
+                <td>?</td>
+                <td>25</td>
+            </tr>
+        </table>
+        <input type="text" id="ans7" placeholder="Enter the missing number">
+        <p id="err7" class="error">ACCESS DENIED. Invalid trace variable.</p>
+        <button onclick="checkAnswer('ans7', '25', 'puzzle7', 'success', 'err7')">Submit</button>
     </div>
 
     <!-- Success -->
