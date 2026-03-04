@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS IB DP Escape Room: The Locked Mainframe</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #161b22;
+            border: 2px solid #39ff14;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 600px;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #fff;
+        }
+        input[type="text"] {
+            background-color: #0d1117;
+            border: 1px solid #39ff14;
+            color: #39ff14;
+            padding: 10px;
+            width: calc(100% - 24px);
+            margin-bottom: 15px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        button {
+            background-color: #39ff14;
+            color: #0d1117;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2ebc0f;
+        }
+        .puzzle {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .error {
+            color: #ff4500;
+            font-size: 0.9em;
+            display: none;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>System Locked</h1>
+    
+    <!-- Intro -->
+    <div id="intro" class="puzzle active">
+        <p>Welcome, IB Computer Science Student. The school's mainframe has been locked down by a rogue process. You have 35 minutes to override the system by solving 5 security layers based on your coursework.</p>
+        <button onclick="nextPuzzle('intro', 'puzzle1')">Initialize Override Sequence</button>
+    </div>
+
+    <!-- Puzzle 1 -->
+    <div id="puzzle1" class="puzzle">
+        <h2>Layer 1: Data Representation</h2>
+        <p>To unlock the first terminal, you must prove your understanding of base systems. Convert the following binary sequence into its hexadecimal equivalent. Remember to divide it into nibbles first.</p>
+        <p><strong>Binary: 11101011</strong></p>
+        <input type="text" id="ans1" placeholder="Enter Hexadecimal (e.g. A1)">
+        <p id="err1" class="error">ACCESS DENIED. Invalid conversion.</p>
+        <button onclick="checkAnswer('ans1', 'EB', 'puzzle1', 'puzzle2', 'err1')">Submit</button>
+    </div>
+
+    <!-- Puzzle 2 -->
+    <div id="puzzle2" class="puzzle">
+        <h2>Layer 2: Computer Logic</h2>
+        <p>The firewall requires a logic gate identifier. Read the riddle to pass:</p>
+        <p><em>"I am the 'Comparison' gate. My output is True (1) only if my two inputs are different (one must be 0 and the other 1). If they are the same, my output is False (0)."</em></p>
+        <input type="text" id="ans2" placeholder="Enter Logic Gate (e.g. AND)">
+        <p id="err2" class="error">ACCESS DENIED. Logic does not compute.</p>
+        <button onclick="checkAnswer('ans2', 'XOR', 'puzzle2', 'puzzle3', 'err2')">Submit</button>
+    </div>
+
+    <!-- Puzzle 3 -->
+    <div id="puzzle3" class="puzzle">
+        <h2>Layer 3: Cloud Infrastructure</h2>
+        <p>The database has migrated. Identify the correct cloud service model based on this description:</p>
+        <p><em>"This service provides virtualized computing resources over the internet. The provider manages the infrastructure, but you manage your application, data, and everything else. It is like renting a professional kitchen to make your own pizza."</em></p>
+        <input type="text" id="ans3" placeholder="Enter Acronym (e.g. SaaS)">
+        <p id="err3" class="error">ACCESS DENIED. Incorrect cloud model.</p>
+        <button onclick="checkAnswer('ans3', 'IAAS', 'puzzle3', 'puzzle4', 'err3')">Submit</button>
+    </div>
+
+    <!-- Puzzle 4 -->
+    <div id="puzzle4" class="puzzle">
+        <h2>Layer 4: Programming Fundamentals</h2>
+        <p>The script is failing at runtime! When writing code, users sometimes type text when a number is expected. If you try to convert a word like "apple" into an integer using int(), what specific error exception does Python throw?</p>
+        <input type="text" id="ans4" placeholder="Enter Exception Name">
+        <p id="err4" class="error">ACCESS DENIED. Unhandled exception.</p>
+        <button onclick="checkAnswer('ans4', 'VALUEERROR', 'puzzle4', 'puzzle5', 'err4')">Submit</button>
+    </div>
+
+    <!-- Puzzle 5 -->
+    <div id="puzzle5" class="puzzle">
+        <h2>Layer 5: Computational Thinking</h2>
+        <p>Final lock! Before releasing the system, you must specify how success will be measured.</p>
+        <p><em>"What do we call the specific benchmarks or standards that are used to check if a computational solution is successful?"</em></p>
+        <input type="text" id="ans5" placeholder="Enter 2-word term">
+        <p id="err5" class="error">ACCESS DENIED. Missing benchmarks.</p>
+        <button onclick="checkAnswer('ans5', 'EVALUATION CRITERIA', 'puzzle5', 'success', 'err5')">Submit</button>
+    </div>
+
+    <!-- Success -->
+    <div id="success" class="puzzle">
+        <h2>Mainframe Unlocked!</h2>
+        <p>Congratulations! You have successfully bypassed all security layers and restored the system. Your knowledge of IB Computer Science hardware, logic, and programming is flawless.</p>
+        <p><strong>Time to celebrate!</strong></p>
+    </div>
+</div>
+
+<script>
+    function nextPuzzle(currentId, nextId) {
+        document.getElementById(currentId).classList.remove('active');
+        document.getElementById(nextId).classList.add('active');
+    }
+
+    function checkAnswer(inputId, correctAnswer, currentId, nextId, errId) {
+        let userInput = document.getElementById(inputId).value.trim().toUpperCase();
+        if (userInput === correctAnswer) {
+            document.getElementById(errId).style.display = 'none';
+            nextPuzzle(currentId, nextId);
+        } else {
+            document.getElementById(errId).style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>
