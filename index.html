@@ -5,151 +5,486 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CS IB DP Escape Room: The Locked Mainframe</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+        :root {
+            --green: #39ff14;
+            --green-dim: #1a7a08;
+            --green-dark: #0a3d02;
+            --red: #ff4500;
+            --bg: #0d1117;
+            --panel: #161b22;
+            --cyan: #00f5ff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background-color: #0d1117;
-            color: #39ff14;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg);
+            color: var(--green);
+            font-family: 'Share Tech Mono', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
         }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.07) 2px,
+                rgba(0,0,0,0.07) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* CRT flicker */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.5) 100%);
+            pointer-events: none;
+            z-index: 9998;
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 97%, 100% { opacity: 1; }
+            98% { opacity: 0.92; }
+            99% { opacity: 0.97; }
+        }
+
         .container {
-            background-color: #161b22;
-            border: 2px solid #39ff14;
-            border-radius: 10px;
+            background-color: var(--panel);
+            border: 2px solid var(--green);
+            border-radius: 4px;
             padding: 30px;
-            max-width: 650px;
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+            width: 680px;
+            max-width: 96vw;
+            box-shadow: 0 0 40px rgba(57, 255, 20, 0.15), inset 0 0 40px rgba(0,0,0,0.3);
             overflow-y: auto;
-            max-height: 90vh;
+            max-height: 94vh;
+            position: relative;
         }
-        h1, h2 {
+
+        .container::before {
+            content: 'MAINFRAME_TERMINAL_v2.4.1';
+            position: absolute;
+            top: -1px;
+            left: 20px;
+            background: var(--panel);
+            color: var(--green-dim);
+            font-size: 0.65em;
+            padding: 0 6px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
             text-align: center;
             color: #fff;
+            font-size: 1.4em;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px var(--green);
+            margin-bottom: 16px;
         }
+
+        h2 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            color: var(--cyan);
+            font-size: 1em;
+            letter-spacing: 3px;
+            margin-bottom: 16px;
+            text-shadow: 0 0 10px var(--cyan);
+        }
+
+        p { margin-bottom: 12px; line-height: 1.6; font-size: 0.92em; }
+
         input[type="text"] {
-            background-color: #0d1117;
-            border: 1px solid #39ff14;
-            color: #39ff14;
-            padding: 10px;
-            width: calc(100% - 24px);
-            margin-bottom: 15px;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg);
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 10px 14px;
+            width: 100%;
+            margin-bottom: 10px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            outline: none;
+            transition: box-shadow 0.2s;
         }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 12px var(--green);
+            border-color: var(--cyan);
+        }
+
         button {
-            background-color: #39ff14;
-            color: #0d1117;
+            background-color: var(--green);
+            color: var(--bg);
             border: none;
-            padding: 10px 20px;
+            padding: 11px 20px;
             cursor: pointer;
             font-weight: bold;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75em;
+            letter-spacing: 2px;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 8px;
+            transition: background 0.2s, box-shadow 0.2s;
         }
+
         button:hover {
-            background-color: #2ebc0f;
+            background-color: var(--cyan);
+            box-shadow: 0 0 16px var(--cyan);
         }
-        .puzzle {
-            display: none;
+
+        .puzzle { display: none; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .active {
-            display: block;
-        }
+
         .error {
-            color: #ff4500;
-            font-size: 0.9em;
+            color: var(--red);
+            font-size: 0.85em;
             display: none;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            animation: shake 0.3s;
         }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
         pre {
             background-color: #000;
-            padding: 10px;
-            border-left: 3px solid #39ff14;
+            padding: 12px;
+            border-left: 3px solid var(--green);
             overflow-x: auto;
+            font-size: 0.88em;
+            margin-bottom: 12px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 15px;
             color: #fff;
+            font-size: 0.88em;
         }
+
         th, td {
-            border: 1px solid #39ff14;
-            padding: 8px;
+            border: 1px solid var(--green);
+            padding: 7px;
             text-align: center;
         }
-        .highlight {
-            color: #ff4500;
-            font-weight: bold;
+
+        th { background: var(--green-dark); color: var(--green); font-family: 'Orbitron', sans-serif; font-size: 0.8em; }
+
+        .highlight { color: var(--red); font-weight: bold; }
+
+        .layer-badge {
+            display: inline-block;
+            background: var(--green-dark);
+            border: 1px solid var(--green-dim);
+            color: var(--green);
+            font-size: 0.7em;
+            padding: 2px 8px;
+            margin-bottom: 14px;
+            letter-spacing: 2px;
+        }
+
+        /* ===================== SUCCESS SCREEN ===================== */
+        #success {
+            text-align: center;
+            position: relative;
+        }
+
+        #success h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6em;
+            color: var(--green);
+            text-shadow: 0 0 30px var(--green), 0 0 60px var(--green);
+            animation: pulse-glow 1.2s infinite;
+            letter-spacing: 4px;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { text-shadow: 0 0 20px var(--green), 0 0 40px var(--green); }
+            50% { text-shadow: 0 0 40px var(--green), 0 0 80px var(--green), 0 0 120px #aaff88; }
+        }
+
+        /* Matrix rain canvas */
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            display: none;
+            opacity: 0.18;
+        }
+
+        /* Glitch text effect */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            inset: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6em;
+            letter-spacing: 4px;
+        }
+
+        .glitch::before {
+            color: #ff004f;
+            animation: glitch1 2.5s infinite;
+            clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+        }
+
+        .glitch::after {
+            color: var(--cyan);
+            animation: glitch2 2.5s infinite;
+            clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+        }
+
+        @keyframes glitch1 {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-3px, 1px); }
+            94% { transform: translate(3px, -1px); }
+            96% { transform: translate(-2px, 2px); }
+        }
+
+        @keyframes glitch2 {
+            0%, 88%, 100% { transform: translate(0); }
+            90% { transform: translate(3px, 2px); }
+            92% { transform: translate(-3px, -1px); }
+            95% { transform: translate(2px, -2px); }
+        }
+
+        /* Typewriter log */
+        #hack-log {
+            background: #000;
+            border: 1px solid var(--green-dim);
+            padding: 14px;
+            text-align: left;
+            font-size: 0.78em;
+            min-height: 130px;
+            margin: 16px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #hack-log .log-line {
+            display: block;
+            opacity: 0;
+            animation: appear 0.1s forwards;
+            margin-bottom: 3px;
+        }
+
+        @keyframes appear {
+            to { opacity: 1; }
+        }
+
+        /* Progress bar */
+        #breach-bar-wrap {
+            background: #000;
+            border: 1px solid var(--green-dim);
+            height: 22px;
+            width: 100%;
+            margin: 12px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #breach-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--green-dark), var(--green), #aaff88);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 12px var(--green);
+        }
+
+        #breach-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72em;
+            letter-spacing: 2px;
+            mix-blend-mode: difference;
+            color: #fff;
+        }
+
+        /* Scan line sweep on success */
+        .scan-sweep {
+            position: fixed;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: linear-gradient(180deg, transparent, rgba(57,255,20,0.12), transparent);
+            z-index: 9997;
+            animation: scan 2.5s linear infinite;
+            pointer-events: none;
+            display: none;
+        }
+
+        @keyframes scan {
+            from { top: -5%; }
+            to { top: 105%; }
+        }
+
+        /* Corner decorations */
+        .corner {
+            position: absolute;
+            width: 14px; height: 14px;
+            border-color: var(--cyan);
+            border-style: solid;
+            opacity: 0.6;
+        }
+        .corner.tl { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
+        .corner.tr { top: 6px; right: 6px; border-width: 2px 2px 0 0; }
+        .corner.bl { bottom: 6px; left: 6px; border-width: 0 0 2px 2px; }
+        .corner.br { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
+
+        /* Exploding particles */
+        .particle {
+            position: fixed;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            animation: particle-fly 1.2s ease-out forwards;
+        }
+
+        @keyframes particle-fly {
+            0% { opacity: 1; transform: translate(0,0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+        }
+
+        #success-badge {
+            display: inline-block;
+            border: 2px solid var(--green);
+            padding: 6px 20px;
+            margin: 12px auto;
+            color: var(--green);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7em;
+            letter-spacing: 3px;
+            box-shadow: 0 0 20px rgba(57,255,20,0.3);
+            animation: badge-pop 0.6s 3.5s both;
+        }
+
+        @keyframes badge-pop {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        #final-msg {
+            opacity: 0;
+            animation: fadeIn 1s 4.2s both;
+            font-size: 0.9em;
+            color: #ccc;
+            line-height: 1.7;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>System Locked</h1>
-    
+<canvas id="matrix-canvas"></canvas>
+<div class="scan-sweep" id="scan-sweep"></div>
+
+<div class="container" id="main-container">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <h1>⚡ SYSTEM LOCKED ⚡</h1>
+
     <!-- Intro -->
     <div id="intro" class="puzzle active">
-        <p>Welcome, IB Computer Science Student. The school's mainframe has been locked down by a rogue process. You have 35 minutes to override the system by solving 7 security layers based on your coursework.</p>
-        <button onclick="nextPuzzle('intro', 'puzzle1')">Initialize Override Sequence</button>
+        <p>Welcome, IB Computer Science Student. The school's mainframe has been locked down by a rogue process. You have <strong>35 minutes</strong> to override the system by solving 7 security layers based on your coursework.</p>
+        <button onclick="nextPuzzle('intro', 'puzzle1')">▶ INITIALIZE OVERRIDE SEQUENCE</button>
     </div>
 
     <!-- Puzzle 1 -->
     <div id="puzzle1" class="puzzle">
-        <h2>Layer 1: Data Representation</h2>
+        <div class="layer-badge">[ LAYER 1 OF 7 ]</div>
+        <h2>◈ DATA REPRESENTATION</h2>
         <p>To unlock the first terminal, you must prove your understanding of base systems. Convert the following binary sequence into its hexadecimal equivalent. Remember to divide it into nibbles first.</p>
         <p><strong>Binary: 11101011</strong></p>
         <input type="text" id="ans1" placeholder="Enter Hexadecimal (e.g. A1)">
-        <p id="err1" class="error">ACCESS DENIED. Invalid conversion.</p>
-        <button onclick="checkAnswer('ans1', 'EB', 'puzzle1', 'puzzle2', 'err1')">Submit</button>
+        <p id="err1" class="error">⚠ ACCESS DENIED — Invalid conversion.</p>
+        <button onclick="checkAnswer('ans1', 'EB', 'puzzle1', 'puzzle2', 'err1')">▶ SUBMIT</button>
     </div>
 
     <!-- Puzzle 2 -->
     <div id="puzzle2" class="puzzle">
-        <h2>Layer 2: Computer Logic</h2>
+        <div class="layer-badge">[ LAYER 2 OF 7 ]</div>
+        <h2>◈ COMPUTER LOGIC</h2>
         <p>The firewall requires a logic gate identifier. Read the riddle to pass:</p>
         <p><em>"I am the 'Comparison' gate. My output is True (1) only if my two inputs are different (one must be 0 and the other 1). If they are the same, my output is False (0)."</em></p>
         <input type="text" id="ans2" placeholder="Enter Logic Gate (e.g. AND)">
-        <p id="err2" class="error">ACCESS DENIED. Logic does not compute.</p>
-        <button onclick="checkAnswer('ans2', 'XOR', 'puzzle2', 'puzzle3', 'err2')">Submit</button>
+        <p id="err2" class="error">⚠ ACCESS DENIED — Logic does not compute.</p>
+        <button onclick="checkAnswer('ans2', 'XOR', 'puzzle2', 'puzzle3', 'err2')">▶ SUBMIT</button>
     </div>
 
     <!-- Puzzle 3 -->
     <div id="puzzle3" class="puzzle">
-        <h2>Layer 3: Cloud Infrastructure</h2>
+        <div class="layer-badge">[ LAYER 3 OF 7 ]</div>
+        <h2>◈ CLOUD INFRASTRUCTURE</h2>
         <p>The database has migrated. Identify the correct cloud service model based on this description:</p>
         <p><em>"This service provides virtualized computing resources over the internet. The provider manages the infrastructure, but you manage your application, data, and everything else. It is like renting a professional kitchen to make your own pizza."</em></p>
         <input type="text" id="ans3" placeholder="Enter Acronym (e.g. SaaS)">
-        <p id="err3" class="error">ACCESS DENIED. Incorrect cloud model.</p>
-        <button onclick="checkAnswer('ans3', 'IAAS', 'puzzle3', 'puzzle4', 'err3')">Submit</button>
+        <p id="err3" class="error">⚠ ACCESS DENIED — Incorrect cloud model.</p>
+        <button onclick="checkAnswer('ans3', 'IAAS', 'puzzle3', 'puzzle4', 'err3')">▶ SUBMIT</button>
     </div>
 
     <!-- Puzzle 4 -->
     <div id="puzzle4" class="puzzle">
-        <h2>Layer 4: Programming Fundamentals</h2>
+        <div class="layer-badge">[ LAYER 4 OF 7 ]</div>
+        <h2>◈ PROGRAMMING FUNDAMENTALS</h2>
         <p>The script is failing at runtime! When writing code, users sometimes type text when a number is expected. If you try to convert a word like "apple" into an integer using int(), what specific error exception does Python throw?</p>
         <input type="text" id="ans4" placeholder="Enter Exception Name">
-        <p id="err4" class="error">ACCESS DENIED. Unhandled exception.</p>
-        <button onclick="checkAnswer('ans4', 'VALUEERROR', 'puzzle4', 'puzzle5', 'err4')">Submit</button>
+        <p id="err4" class="error">⚠ ACCESS DENIED — Unhandled exception.</p>
+        <button onclick="checkAnswer('ans4', 'VALUEERROR', 'puzzle4', 'puzzle5', 'err4')">▶ SUBMIT</button>
     </div>
 
     <!-- Puzzle 5 -->
     <div id="puzzle5" class="puzzle">
-        <h2>Layer 5: Computational Thinking</h2>
+        <div class="layer-badge">[ LAYER 5 OF 7 ]</div>
+        <h2>◈ COMPUTATIONAL THINKING</h2>
         <p>Before releasing the system, you must specify how success will be measured.</p>
         <p><em>"What do we call the specific benchmarks or standards that are used to check if a computational solution is successful?"</em></p>
         <input type="text" id="ans5" placeholder="Enter 2-word term">
-        <p id="err5" class="error">ACCESS DENIED. Missing benchmarks.</p>
-        <button onclick="checkAnswer('ans5', 'EVALUATION CRITERIA', 'puzzle5', 'puzzle6', 'err5')">Submit</button>
+        <p id="err5" class="error">⚠ ACCESS DENIED — Missing benchmarks.</p>
+        <button onclick="checkAnswer('ans5', 'EVALUATION CRITERIA', 'puzzle5', 'puzzle6', 'err5')">▶ SUBMIT</button>
     </div>
 
     <!-- Puzzle 6 -->
     <div id="puzzle6" class="puzzle">
-        <h2>Layer 6: Complete the Code</h2>
+        <div class="layer-badge">[ LAYER 6 OF 7 ]</div>
+        <h2>◈ COMPLETE THE CODE</h2>
         <p>This code simulates a post-condition loop to ask for a password until the correct one is entered. However, an essential keyword is missing, causing an infinite loop even when the password is correct!</p>
 <pre><code>while True:
     password = input("Write the password: ")
@@ -159,18 +494,19 @@
     print("Bad password, try again")</code></pre>
         <p>What exact Python keyword must replace the blank line to exit the loop?</p>
         <input type="text" id="ans6" placeholder="Enter the missing keyword">
-        <p id="err6" class="error">ACCESS DENIED. Infinite loop detected.</p>
-        <button onclick="checkAnswer('ans6', 'BREAK', 'puzzle6', 'puzzle7', 'err6')">Submit</button>
+        <p id="err6" class="error">⚠ ACCESS DENIED — Infinite loop detected.</p>
+        <button onclick="checkAnswer('ans6', 'BREAK', 'puzzle6', 'puzzle7', 'err6')">▶ SUBMIT</button>
     </div>
 
     <!-- Puzzle 7 -->
     <div id="puzzle7" class="puzzle">
-        <h2>Layer 7: Advanced Trace Table</h2>
-        <p>Final lock! We must verify the execution flow of a conditional loop. The trace table below tracks a `while` loop that counts from 1 to 5.</p>
+        <div class="layer-badge">[ LAYER 7 OF 7 — FINAL LOCK ]</div>
+        <h2>◈ ADVANCED TRACE TABLE</h2>
+        <p>Final lock! We must verify the execution flow of a conditional loop. The trace table below tracks a <code>while</code> loop that counts from 1 to 5.</p>
         <table>
             <tr>
                 <th>Count</th>
-                <th>Count <= 5?</th>
+                <th>Count &lt;= 5?</th>
                 <th>Output</th>
                 <th>Count = count + 1</th>
             </tr>
@@ -183,31 +519,167 @@
         </table>
         <p>Determine the exact values of <strong>X</strong>, <strong>Y</strong>, and <strong>Z</strong>. Combine them together without spaces.</p>
         <input type="text" id="ans7" placeholder="e.g. 99No">
-        <p id="err7" class="error">ACCESS DENIED. Invalid trace variables.</p>
-        <button onclick="checkAnswer('ans7', '44YES', 'puzzle7', 'success', 'err7')">Submit</button>
+        <p id="err7" class="error">⚠ ACCESS DENIED — Invalid trace variables.</p>
+        <button onclick="checkAnswer('ans7', '44YES', 'puzzle7', 'success', 'err7')">▶ SUBMIT FINAL OVERRIDE</button>
     </div>
 
-    <!-- Success -->
+    <!-- ===================== SUCCESS SCREEN ===================== -->
     <div id="success" class="puzzle">
-        <h2>Mainframe Unlocked!</h2>
-        <p>Congratulations! You have successfully bypassed all security layers and restored the system. Your knowledge of IB Computer Science hardware, logic, and programming is flawless.</p>
-        <p><strong>Time to celebrate!</strong></p>
+        <h2 class="glitch" data-text="MAINFRAME UNLOCKED">MAINFRAME UNLOCKED</h2>
+
+        <div id="breach-bar-wrap">
+            <div id="breach-bar"></div>
+            <div id="breach-label">INITIATING BREACH SEQUENCE...</div>
+        </div>
+
+        <div id="hack-log"></div>
+
+        <div id="success-badge">◈ SECURITY CLEARANCE: ALPHA-7 ◈</div>
+
+        <p id="final-msg">
+            All 7 security layers have been successfully bypassed.<br>
+            Your knowledge of IB Computer Science — hardware, logic, cloud systems,<br>
+            and programming — is <strong style="color:var(--green)">FLAWLESS</strong>.<br><br>
+            <span style="color:var(--cyan)">System restored. Mission complete.</span>
+        </p>
     </div>
 </div>
 
 <script>
     function nextPuzzle(currentId, nextId) {
         document.getElementById(currentId).classList.remove('active');
-        document.getElementById(nextId).classList.add('active');
+        const next = document.getElementById(nextId);
+        next.classList.add('active');
+        if (nextId === 'success') launchSuccessSequence();
     }
 
     function checkAnswer(inputId, correctAnswer, currentId, nextId, errId) {
-        let userInput = document.getElementById(inputId).value.trim().toUpperCase();
+        const userInput = document.getElementById(inputId).value.trim().toUpperCase();
+        const errEl = document.getElementById(errId);
         if (userInput === correctAnswer) {
-            document.getElementById(errId).style.display = 'none';
+            errEl.style.display = 'none';
             nextPuzzle(currentId, nextId);
         } else {
-            document.getElementById(errId).style.display = 'block';
+            errEl.style.display = 'block';
+            errEl.style.animation = 'none';
+            void errEl.offsetWidth;
+            errEl.style.animation = 'shake 0.3s';
+        }
+    }
+
+    /* ============ SUCCESS SEQUENCE ============ */
+    function launchSuccessSequence() {
+        startMatrixRain();
+        document.getElementById('scan-sweep').style.display = 'block';
+        spawnParticles();
+        animateBreachBar();
+        typeHackLog();
+    }
+
+    /* --- Matrix Rain --- */
+    function startMatrixRain() {
+        const canvas = document.getElementById('matrix-canvas');
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const cols = Math.floor(canvas.width / 16);
+        const drops = Array(cols).fill(1);
+        const chars = 'アイウエオカキクケコABCDEF0123456789!@#$%^&*()_+{}[]|';
+
+        function draw() {
+            ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#39ff14';
+            ctx.font = '14px Share Tech Mono, monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(char, i * 16, drops[i] * 16);
+                if (drops[i] * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(draw, 40);
+    }
+
+    /* --- Breach progress bar --- */
+    function animateBreachBar() {
+        const bar = document.getElementById('breach-bar');
+        const label = document.getElementById('breach-label');
+        const steps = [
+            [10, 'BYPASSING ENCRYPTION...'],
+            [28, 'INJECTING PAYLOAD...'],
+            [45, 'ESCALATING PRIVILEGES...'],
+            [63, 'DISABLING FIREWALL...'],
+            [80, 'EXTRACTING ROOT KEYS...'],
+            [93, 'OVERWRITING LOCKOUT...'],
+            [100, 'ACCESS GRANTED ✓']
+        ];
+        let i = 0;
+        function step() {
+            if (i >= steps.length) return;
+            bar.style.width = steps[i][0] + '%';
+            label.textContent = steps[i][1];
+            if (steps[i][0] === 100) {
+                bar.style.background = 'linear-gradient(90deg, #0a3d02, #39ff14, #aaff88)';
+                label.style.color = '#000';
+            }
+            i++;
+            setTimeout(step, 480);
+        }
+        step();
+    }
+
+    /* --- Typewriter hack log --- */
+    function typeHackLog() {
+        const log = document.getElementById('hack-log');
+        const lines = [
+            { text: '> Scanning active ports...', delay: 200, color: '#39ff14' },
+            { text: '> Port 22 [SSH] — OPEN', delay: 600, color: '#39ff14' },
+            { text: '> Port 443 [HTTPS] — OPEN', delay: 900, color: '#39ff14' },
+            { text: '> Attempting brute force...', delay: 1300, color: '#aaa' },
+            { text: '> [FAIL] 127 attempts — rotating cipher', delay: 1700, color: '#ff4500' },
+            { text: '> Deploying zero-day exploit_kb2038...', delay: 2200, color: '#aaa' },
+            { text: '> Kernel buffer overflow — triggered!', delay: 2700, color: '#00f5ff' },
+            { text: '> Root shell obtained: #', delay: 3100, color: '#39ff14' },
+            { text: '> chmod 777 /mainframe/core', delay: 3400, color: '#39ff14' },
+            { text: '> All 7 security layers — DEFEATED', delay: 3800, color: '#aaff88' },
+            { text: '██████████████ BREACH COMPLETE', delay: 4200, color: '#39ff14' },
+        ];
+
+        lines.forEach(({ text, delay, color }) => {
+            setTimeout(() => {
+                const span = document.createElement('span');
+                span.className = 'log-line';
+                span.style.color = color;
+                span.textContent = text;
+                log.appendChild(span);
+                log.scrollTop = log.scrollHeight;
+            }, delay);
+        });
+    }
+
+    /* --- Particle burst --- */
+    function spawnParticles() {
+        const colors = ['#39ff14', '#00f5ff', '#ff4500', '#aaff88', '#ffffff'];
+        for (let i = 0; i < 60; i++) {
+            setTimeout(() => {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const angle = Math.random() * 360;
+                const dist = 120 + Math.random() * 300;
+                const tx = Math.cos(angle * Math.PI / 180) * dist + 'px';
+                const ty = Math.sin(angle * Math.PI / 180) * dist + 'px';
+                p.style.setProperty('--tx', tx);
+                p.style.setProperty('--ty', ty);
+                p.style.background = colors[Math.floor(Math.random() * colors.length)];
+                p.style.left = (window.innerWidth / 2) + 'px';
+                p.style.top = (window.innerHeight / 2) + 'px';
+                p.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1600);
+            }, i * 30);
         }
     }
 </script>
