@@ -429,7 +429,7 @@
 
     <!-- Puzzle 1 -->
     <div id="puzzle1" class="puzzle">
-        <div class="layer-badge">[ LAYER 1 OF 7 ]</div>
+        <div class="layer-badge">[ LAYER 1 OF 10 ]</div>
         <h2>◈ DATA REPRESENTATION</h2>
         <p>To unlock the first terminal, you must prove your understanding of base systems. Convert the following binary sequence into its hexadecimal equivalent. Remember to divide it into nibbles first.</p>
         <p><strong>Binary: 11101011</strong></p>
@@ -440,7 +440,7 @@
 
     <!-- Puzzle 2 -->
     <div id="puzzle2" class="puzzle">
-        <div class="layer-badge">[ LAYER 2 OF 7 ]</div>
+        <div class="layer-badge">[ LAYER 2 OF 10 ]</div>
         <h2>◈ COMPUTER LOGIC</h2>
         <p>The firewall requires a logic gate identifier. Read the riddle to pass:</p>
         <p><em>"I am the 'Comparison' gate. My output is True (1) only if my two inputs are different (one must be 0 and the other 1). If they are the same, my output is False (0)."</em></p>
@@ -451,7 +451,7 @@
 
     <!-- Puzzle 3 -->
     <div id="puzzle3" class="puzzle">
-        <div class="layer-badge">[ LAYER 3 OF 7 ]</div>
+        <div class="layer-badge">[ LAYER 3 OF 10 ]</div>
         <h2>◈ CLOUD INFRASTRUCTURE</h2>
         <p>The database has migrated. Identify the correct cloud service model based on this description:</p>
         <p><em>"This service provides virtualized computing resources over the internet. The provider manages the infrastructure, but you manage your application, data, and everything else. It is like renting a professional kitchen to make your own pizza."</em></p>
@@ -462,7 +462,7 @@
 
     <!-- Puzzle 4 -->
     <div id="puzzle4" class="puzzle">
-        <div class="layer-badge">[ LAYER 4 OF 7 ]</div>
+        <div class="layer-badge">[ LAYER 4 OF 10 ]</div>
         <h2>◈ PROGRAMMING FUNDAMENTALS</h2>
         <p>The script is failing at runtime! When writing code, users sometimes type text when a number is expected. If you try to convert a word like "apple" into an integer using int(), what specific error exception does Python throw?</p>
         <input type="text" id="ans4" placeholder="Enter Exception Name">
@@ -472,7 +472,7 @@
 
     <!-- Puzzle 5 -->
     <div id="puzzle5" class="puzzle">
-        <div class="layer-badge">[ LAYER 5 OF 7 ]</div>
+        <div class="layer-badge">[ LAYER 5 OF 10 ]</div>
         <h2>◈ COMPUTATIONAL THINKING</h2>
         <p>Before releasing the system, you must specify how success will be measured.</p>
         <p><em>"What do we call the specific benchmarks or standards that are used to check if a computational solution is successful?"</em></p>
@@ -483,7 +483,7 @@
 
     <!-- Puzzle 6 -->
     <div id="puzzle6" class="puzzle">
-        <div class="layer-badge">[ LAYER 6 OF 7 ]</div>
+        <div class="layer-badge">[ LAYER 6 OF 10 ]</div>
         <h2>◈ COMPLETE THE CODE</h2>
         <p>This code simulates a post-condition loop to ask for a password until the correct one is entered. However, an essential keyword is missing, causing an infinite loop even when the password is correct!</p>
 <pre><code>while True:
@@ -500,7 +500,7 @@
 
     <!-- Puzzle 7 -->
     <div id="puzzle7" class="puzzle">
-        <div class="layer-badge">[ LAYER 7 OF 7 — FINAL LOCK ]</div>
+        <div class="layer-badge">[ LAYER 7 OF 10 ]</div>
         <h2>◈ ADVANCED TRACE TABLE</h2>
         <p>Final lock! We must verify the execution flow of a conditional loop. The trace table below tracks a <code>while</code> loop that counts from 1 to 5.</p>
         <table>
@@ -520,7 +520,56 @@
         <p>Determine the exact values of <strong>X</strong>, <strong>Y</strong>, and <strong>Z</strong>. Combine them together without spaces.</p>
         <input type="text" id="ans7" placeholder="e.g. 99No">
         <p id="err7" class="error">⚠ ACCESS DENIED — Invalid trace variables.</p>
-        <button onclick="checkAnswer('ans7', '44YES', 'puzzle7', 'success', 'err7')">▶ SUBMIT FINAL OVERRIDE</button>
+        <button onclick="checkAnswer('ans7', '44YES', 'puzzle7', 'puzzle8', 'err7')">▶ SUBMIT</button>
+    </div>
+
+    <!-- Puzzle 8: Karnaugh Maps -->
+    <div id="puzzle8" class="puzzle">
+        <div class="layer-badge">[ LAYER 8 OF 10 ]</div>
+        <h2>◈ KARNAUGH MAP DECRYPTION</h2>
+        <p>A K-map cipher guards the next firewall. Analyse the following 2-variable Karnaugh map and determine the simplified Boolean expression.</p>
+        <table>
+            <tr>
+                <th></th>
+                <th>B = 0</th>
+                <th>B = 1</th>
+            </tr>
+            <tr><td style="color:var(--green);font-weight:bold">A = 0</td><td>0</td><td>1</td></tr>
+            <tr><td style="color:var(--green);font-weight:bold">A = 1</td><td>0</td><td>1</td></tr>
+        </table>
+        <p>What is the simplified Boolean expression for this K-map?</p>
+        <input type="text" id="ans8" placeholder="e.g. A, B, A+B, A·B ...">
+        <p id="err8" class="error">⚠ ACCESS DENIED — K-map simplification failed.</p>
+        <button onclick="checkAnswer('ans8', 'B', 'puzzle8', 'puzzle9', 'err8')">▶ SUBMIT</button>
+    </div>
+
+    <!-- Puzzle 9: Logical Expressions -->
+    <div id="puzzle9" class="puzzle">
+        <div class="layer-badge">[ LAYER 9 OF 10 ]</div>
+        <h2>◈ BOOLEAN EXPRESSION ANALYSIS</h2>
+        <p>The encryption module uses a Boolean expression as its unlock code. Evaluate the following expression for the given values and enter the numeric result (0 or 1).</p>
+        <pre><code>Expression:  (A AND B) OR (NOT A AND C)
+
+Given:  A = 1,  B = 0,  C = 1</code></pre>
+        <input type="text" id="ans9" placeholder="Enter 0 or 1">
+        <p id="err9" class="error">⚠ ACCESS DENIED — Boolean evaluation incorrect.</p>
+        <button onclick="checkAnswer('ans9', '0', 'puzzle9', 'puzzle10', 'err9')">▶ SUBMIT</button>
+    </div>
+
+    <!-- Puzzle 10: Coding Constructs -->
+    <div id="puzzle10" class="puzzle">
+        <div class="layer-badge">[ LAYER 10 OF 10 — FINAL LOCK ]</div>
+        <h2>◈ CODE CONSTRUCT ANALYSIS</h2>
+        <p>The final barrier runs this Python program. Trace through it carefully — it uses <strong>sequence</strong>, <strong>selection</strong>, and <strong>iteration</strong>. What is the <em>exact</em> output printed to the screen?</p>
+<pre><code>total = 0
+for i in range(1, 6):
+    if i % 2 == 0:
+        total = total + i
+
+print(total)</code></pre>
+        <input type="text" id="ans10" placeholder="Enter the printed value">
+        <p id="err10" class="error">⚠ ACCESS DENIED — Code trace mismatch.</p>
+        <button onclick="checkAnswer('ans10', '6', 'puzzle10', 'success', 'err10')">▶ SUBMIT FINAL OVERRIDE</button>
     </div>
 
     <!-- ===================== SUCCESS SCREEN ===================== -->
@@ -534,12 +583,13 @@
 
         <div id="hack-log"></div>
 
-        <div id="success-badge">◈ SECURITY CLEARANCE: ALPHA-7 ◈</div>
+        <div id="success-badge">◈ SECURITY CLEARANCE: ALPHA-10 ◈</div>
 
         <p id="final-msg">
-            All 7 security layers have been successfully bypassed.<br>
-            Your knowledge of IB Computer Science — hardware, logic, cloud systems,<br>
-            and programming — is <strong style="color:var(--green)">FLAWLESS</strong>.<br><br>
+            All 10 security layers have been successfully bypassed.<br>
+            Your knowledge of IB Computer Science — data representation, logic gates,<br>
+            cloud systems, Boolean algebra, Karnaugh maps, and programming —<br>
+            is <strong style="color:var(--green)">FLAWLESS</strong>.<br><br>
             <span style="color:var(--cyan)">System restored. Mission complete.</span>
         </p>
     </div>
@@ -644,7 +694,7 @@
             { text: '> Kernel buffer overflow — triggered!', delay: 2700, color: '#00f5ff' },
             { text: '> Root shell obtained: #', delay: 3100, color: '#39ff14' },
             { text: '> chmod 777 /mainframe/core', delay: 3400, color: '#39ff14' },
-            { text: '> All 7 security layers — DEFEATED', delay: 3800, color: '#aaff88' },
+            { text: '> All 10 security layers — DEFEATED', delay: 3800, color: '#aaff88' },
             { text: '██████████████ BREACH COMPLETE', delay: 4200, color: '#39ff14' },
         ];
 
